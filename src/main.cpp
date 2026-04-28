@@ -1,6 +1,7 @@
 #include "StudentManager.h"
 #include "Storage.h"
 
+#include <iomanip>
 #include <iostream>
 #include <limits>
 
@@ -34,6 +35,13 @@ void printStudent(const Student& student) {
               << '\n';
 }
 
+void printCourse(const Course& course) {
+    std::cout << "ID: " << course.getId()
+              << ", Name: " << course.getName()
+              << ", Credit: " << course.getCredit()
+              << '\n';
+}
+
 void printStudents(const StudentManager& manager) {
     const auto& students = manager.getAllStudents();
     if (students.empty()) {
@@ -47,7 +55,7 @@ void printStudents(const StudentManager& manager) {
 }
 
 void saveStudentsOrReport(const StudentManager& manager) {
-    if (!Storage::saveStudents(manager, kDataFilePath)) {
+    if (!Storage::saveData(manager, kDataFilePath)) {
         std::cout << "Warning: failed to save data to " << kDataFilePath << "\n";
     }
 }
@@ -60,6 +68,9 @@ void printMenu() {
     std::cout << "3. Find student\n";
     std::cout << "4. Update student\n";
     std::cout << "5. Remove student\n";
+    std::cout << "6. Add course\n";
+    std::cout << "7. Add grade\n";
+    std::cout << "8. Show course average\n";
     std::cout << "0. Exit\n";
     std::cout << "Choose: ";
 }
@@ -72,7 +83,7 @@ void clearInput() {
 int main() {
     StudentManager manager;
 
-    if (!Storage::loadStudents(manager, kDataFilePath)) {
+    if (!Storage::loadData(manager, kDataFilePath)) {
         std::cout << "Starting with an empty student list.\n";
     }
 
@@ -181,6 +192,76 @@ int main() {
                 } else {
                     std::cout << "Student not found.\n";
                 }
+            } else if (choice == 6) {
+                int courseId;
+                std::string courseName;
+                int credit;
+
+                if (!readInt("Course ID: ", courseId)) {
+                    std::cout << "Invalid course ID.\n";
+                    continue;
+                }
+
+                if (!readText("Course name: ", courseName)) {
+                    std::cout << "Course name cannot be empty.\n";
+                    continue;
+                }
+
+                if (!readInt("Credit: ", credit)) {
+                    std::cout << "Invalid credit.\n";
+                    continue;
+                }
+
+                manager.addCourse(Course{courseId, courseName, credit});
+                std::cout << "Course added.\n";
+                saveStudentsOrReport(manager);
+            } else if (choice == 7) {
+                int studentId;
+                int courseId;
+                double score;
+
+                if (!readInt("Student ID: ", studentId)) {
+                    std::cout << "Invalid student ID.\n";
+                    continue;
+                }
+
+                if (!readInt("Course ID: ", courseId)) {
+                    std::cout << "Invalid course ID.\n";
+                    continue;
+                }
+
+                std::cout << "Score (0-100): ";
+                if (!(std::cin >> score)) {
+                    std::cout << "Invalid score.\n";
+                    clearInput();
+                    continue;
+                }
+                clearInput();
+
+                manager.addGrade(Grade{studentId, courseId, score});
+                std::cout << "Grade added.\n";
+                saveStudentsOrReport(manager);
+            } else if (choice == 8) {
+                int courseId;
+                if (!readInt("Course ID: ", courseId)) {
+                    std::cout << "Invalid course ID.\n";
+                    continue;
+                }
+
+                auto course = manager.findCourseById(courseId);
+                if (!course.has_value()) {
+                    std::cout << "Course not found.\n";
+                    continue;
+                }
+
+                auto average = manager.getCourseAverageScore(courseId);
+                if (!average.has_value()) {
+                    std::cout << "No grades for this course yet.\n";
+                    continue;
+                }
+
+                printCourse(*course);
+                std::cout << "Average score: " << std::fixed << std::setprecision(2) << *average << '\n';
             } else {
                 std::cout << "Unknown choice.\n";
             }

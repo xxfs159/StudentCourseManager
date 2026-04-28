@@ -34,6 +34,8 @@ target_link_libraries(StudentCourseManager PRIVATE nlohmann_json::nlohmann_json)
 add_executable(StudentCourseManagerTests
     tests/test_student_manager.cpp
     src/Student.cpp
+    src/Course.cpp
+    src/Grade.cpp
     src/StudentManager.cpp
     src/Storage.cpp
 )

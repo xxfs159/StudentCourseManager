@@ -19,6 +19,10 @@ int main() {
 
     manager.addStudent(Student{1, "Alice", 20, "CS"});
     manager.addStudent(Student{2, "Bob", 21, "Math"});
+    manager.addCourse(Course{100, "Algorithms", 4});
+    manager.addCourse(Course{200, "Databases", 3});
+    manager.addGrade(Grade{1, 100, 95.0});
+    manager.addGrade(Grade{2, 100, 85.0});
 
     bool invalidIdRejected = false;
     try {
@@ -39,6 +43,13 @@ int main() {
     assert(manager.getAllStudents().size() == 2);
     assert(manager.exists(1));
     assert(manager.findStudentById(2).has_value());
+    assert(manager.courseExists(100));
+    assert(manager.findCourseById(200).has_value());
+
+    auto average = manager.getCourseAverageScore(100);
+    assert(average.has_value());
+    assert(*average == 90.0);
+    assert(!manager.getCourseAverageScore(200).has_value());
 
     assert(manager.updateStudent(1, "Alicia", 22, "SE"));
     auto updated = manager.findStudentById(1);
@@ -57,6 +68,10 @@ int main() {
     assert(Storage::loadStudents(loadedManager, tempFilePath.string()));
     assert(loadedManager.getAllStudents().size() == 1);
     assert(loadedManager.exists(1));
+    assert(loadedManager.courseExists(100));
+    auto loadedAverage = loadedManager.getCourseAverageScore(100);
+    assert(loadedAverage.has_value());
+    assert(*loadedAverage == 95.0);
     auto loaded = loadedManager.findStudentById(1);
     assert(loaded.has_value());
     assert(loaded->getName() == "Alicia");

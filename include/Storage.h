@@ -6,6 +6,9 @@
 
 class Storage {
 public:
+    static bool saveData(const StudentManager& manager, const std::string& filePath);
+    static bool loadData(StudentManager& manager, const std::string& filePath);
+
     static bool saveStudents(const StudentManager& manager, const std::string& filePath);
     static bool loadStudents(StudentManager& manager, const std::string& filePath);
 };

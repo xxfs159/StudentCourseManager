@@ -6,7 +6,9 @@ A modern C++ student course management system.
 ## Features
 
 - Add, remove, update and search students
-- Store student data in JSON format
+- Add courses and record student grades
+- Calculate average score by course
+- Store students, courses, and grades in JSON format
 - Command-line menu interface
 - Built with CMake
 - Written in modern C++17
