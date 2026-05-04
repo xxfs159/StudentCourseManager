@@ -4,14 +4,12 @@
 #include <utility>
 
 Student::Student(int id, std::string name, int age, std::string major)
-    : id_(id), name_(std::move(name)), age_(age), major_(std::move(major)) {
+    : id_(id), name_(std::move(name)), major_(std::move(major)) {
     if (id_ <= 0) {
         throw std::invalid_argument("Student ID must be positive.");
     }
 
-    if (age_ <= 0) {
-        throw std::invalid_argument("Student age must be positive.");
-    }
+    setAge(age);
 }
 
 int Student::getId() const {

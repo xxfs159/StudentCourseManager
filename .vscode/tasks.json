@@ -2,10 +2,24 @@
   "version": "2.0.0",
   "tasks": [
     {
+      "label": "configure",
+      "type": "shell",
+      "command": "cmake",
+      "args": ["-S", ".", "-B", "build"],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
       "label": "build",
       "type": "shell",
       "command": "cmake",
       "args": ["--build", "build"],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "dependsOn": "configure",
       "group": {
         "kind": "build",
         "isDefault": true
@@ -13,17 +27,32 @@
       "problemMatcher": []
     },
     {
-      "label": "configure",
-      "type": "shell",
-      "command": "cmake",
-      "args": ["-S", ".", "-B", "build"],
-      "problemMatcher": []
-    },
-    {
       "label": "run",
       "type": "shell",
-      "command": "./build/StudentCourseManager",
+      "command": "${workspaceFolder}/build/StudentCourseManager",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
       "dependsOn": "build",
+      "problemMatcher": [],
+      "presentation": {
+        "clear": true,
+        "panel": "shared",
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "test",
+      "type": "shell",
+      "command": "${workspaceFolder}/build/StudentCourseManagerTests",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "dependsOn": "build",
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      },
       "problemMatcher": []
     }
   ]
